@@ -43,10 +43,10 @@ CPU启动环境为16位实模式，之后切换到保护模式，这主要是因
     unsigned gd_off_31_16 : 16;        // high bits of offset in segment
  };
 ```
+每一个成员变量结构中所占的位数。
 
 - 对于如下的代码段，
 
-每一个成员变量结构中所占的位数。
 
 ```
 #define SETGATE(gate, istrap, sel, off, dpl) {            \
