@@ -109,14 +109,9 @@ make debug
 ```
 之后使用si命令可使BIOS单步执行
 
-在gdb中执行x /2i 0xffff0可以看到该地址处的第一条指令是ljmp $0xf0000,$0xe05b
+在gdb中执行`x /2i 0xffff0`可以看到该地址处的第一条指令是`ljmp $0xf0000,$0xe05b`
 
-接下来可执行x /10i 0xfe05b继续跟踪执行过程
-
-4 在gdb界面下，可通过如下命令来看BIOS的代码
-```
- x /2i $pc  //显示当前eip处的汇编指令
-```
+接下来可执行`x /10i 0xfe05b`继续跟踪执行过程
 
 [练习2.2] 在初始化位置0x7c00 设置实地址断点,测试断点正常。
 
@@ -138,39 +133,40 @@ Breakpoint 1, 0x00007c00 in ?? ()
 
 [练习2.3] 在调用qemu 时增加-d in_asm -D q.log 参数，便可以将运行的汇编指令保存在q.log 中。
 将执行的汇编代码与bootasm.S 和 bootblock.asm 进行比较，看看二者是否一致。
+
 首先修改Makefile文件在调用qemu时增加-d in_asm -D q.log 参数，然后执行make debug
 
 在/lab1/bin/q.log可以找到执行的汇编指令，与/lab1/boot/bootasm.S中的代码相同
 ```
-	----------------
-	IN: 
-	0x00007c00:  cli    
-	
-	----------------
-	IN: 
-	0x00007c01:  cld    
-	0x00007c02:  xor    %ax,%ax
-	0x00007c04:  mov    %ax,%ds
-	0x00007c06:  mov    %ax,%es
-	0x00007c08:  mov    %ax,%ss
-	
-	----------------
-	IN: 
-	0x00007c0a:  in     $0x64,%al
-	
-	----------------
-	IN: 
-	0x00007c0c:  test   $0x2,%al
-	0x00007c0e:  jne    0x7c0a
-	
-	----------------
-	IN: 
-	0x00007c10:  mov    $0xd1,%al
-	0x00007c12:  out    %al,$0x64
-	0x00007c14:  in     $0x64,%al
-	0x00007c16:  test   $0x2,%al
-	0x00007c18:  jne    0x7c14
-	...
+----------------
+IN: 
+0x00007c00:  cli    
+
+----------------
+IN: 
+0x00007c01:  cld    
+0x00007c02:  xor    %ax,%ax
+0x00007c04:  mov    %ax,%ds
+0x00007c06:  mov    %ax,%es
+0x00007c08:  mov    %ax,%ss
+
+----------------
+IN: 
+0x00007c0a:  in     $0x64,%al
+
+----------------
+IN: 
+0x00007c0c:  test   $0x2,%al
+0x00007c0e:  jne    0x7c0a
+
+----------------
+IN: 
+0x00007c10:  mov    $0xd1,%al
+0x00007c12:  out    %al,$0x64
+0x00007c14:  in     $0x64,%al
+0x00007c16:  test   $0x2,%al
+0x00007c18:  jne    0x7c14
+...
 ```
 
 ## [练习3]
@@ -178,73 +174,73 @@ Breakpoint 1, 0x00007c00 in ?? ()
 
 从0x7c00开始执行，首先执行如下代码进行初始化
 ```
-	.code16
-	    cli              #禁止中断发生
-	    cld              #将标志寄存器Flag的方向标志位DF清零
-	    xorw %ax, %ax
-	    movw %ax, %ds
-	    movw %ax, %es
-	    movw %ax, %ss    #段寄存器置0
+.code16
+    cli              #禁止中断发生
+    cld              #将标志寄存器Flag的方向标志位DF清零
+    xorw %ax, %ax
+    movw %ax, %ds
+    movw %ax, %es
+    movw %ax, %ss    #段寄存器置0
 ```
 
 打开A20地址线控制
 ```
-	seta20.1:               
-	    inb $0x64, %al       
-	    testb $0x2, %al     #等待8042 Input Buffer为空
-	    jnz seta20.1        
-	
-	    movb $0xd1, %al     #发送write 8042 Output Port(P2)命令到8042 Input Buffer
-	    outb %al, $0x64     
-	
-	seta20.1:               
-	    inb $0x64, %al       
-	    testb $0x2, %al     #等待8042 Input Buffer为空
-	    jnz seta20.1        
-	
-	    movb $0xdf, %al     #将8042 Output Port(P2)得到字节的第2位置1
-	    outb %al, $0x60     #写入到8042 Input Buffer
+seta20.1:               
+    inb $0x64, %al       
+    testb $0x2, %al     #等待8042 Input Buffer为空
+    jnz seta20.1        
+
+    movb $0xd1, %al     #发送write 8042 Output Port(P2)命令到8042 Input Buffer
+    outb %al, $0x64     
+
+seta20.1:               
+    inb $0x64, %al       
+    testb $0x2, %al     #等待8042 Input Buffer为空
+    jnz seta20.1        
+
+    movb $0xdf, %al     #将8042 Output Port(P2)得到字节的第2位置1
+    outb %al, $0x60     #写入到8042 Input Buffer
 ```
 
 初始化GDT表
 ```
-	    lgdt gdtdesc
+lgdt gdtdesc
 ```
 
 修改cr0寄存器，进入保护模式
 ```
-	    movl %cr0, %eax
-	    orl $CR0_PE_ON, %eax
-	    movl %eax, %cr0
+movl %cr0, %eax
+orl $CR0_PE_ON, %eax
+movl %eax, %cr0
 ```
 
 通过长跳转更新cs的基地址
 ```
-	 ljmp $PROT_MODE_CSEG, $protcseg
-	.code32
-	protcseg:
+ljmp $PROT_MODE_CSEG, $protcseg
+.code32
+protcseg:
 ```
 
 设置段寄存器，并建立堆栈
 ```
-	    movw $PROT_MODE_DSEG, %ax
-	    movw %ax, %ds
-	    movw %ax, %es
-	    movw %ax, %fs
-	    movw %ax, %gs
-	    movw %ax, %ss
-	    movl $0x0, %ebp
-	    movl $start, %esp   #设置栈指针
+movw $PROT_MODE_DSEG, %ax
+movw %ax, %ds
+movw %ax, %es
+movw %ax, %fs
+movw %ax, %gs
+movw %ax, %ss
+movl $0x0, %ebp
+movl $start, %esp   #设置栈指针
 ```
 转到保护模式完成，进入boot主方法
 ```
-	    call bootmain
+call bootmain
 ```
 
 ## [练习4]
 分析bootloader加载ELF格式的OS的过程。
 
-bootmain函数中，首先调用了readseg函数从磁盘读取ELF文件的头部到指定位置，然后通过比较头部的e_magic成员变量来判断读取到的文件是否是ELF文件。ELF文件头正确读取后，根据文件头的描述表成员变量将ELF文件读取到内存中的指定位置。最后`((void (*)(void))(ELFHDR->e_entry & 0xFFFFFF))();`这句代码将ELF文件头的e_entry成员强制转化为函数指针并调用，从而进入了操作系统内核态。
+bootmain函数中，首先调用了readseg函数从磁盘读取ELF文件的头部到指定位置，然后通过比较头部的e_magic成员变量来判断读取到的文件是否是ELF文件。ELF文件头正确读取后，根据文件头的描述表成员变量将ELF文件读取到内存中的指定位置。最后执行`((void (*)(void))(ELFHDR->e_entry & 0xFFFFFF))();`这句代码将ELF文件头的e_entry成员强制转化为函数指针并调用，从而进入了操作系统内核态。
 
 ## [练习5] 
 实现函数调用堆栈跟踪函数 
@@ -283,6 +279,7 @@ ebp:0x00007bf8 eip:0x00007d68 args: 0xc031fcfa 0xc08ed88e 0x64e4d08e 0xfa7502a8
 ```
 
 其中最后一行对应的是第一个使用堆栈的函数，即bootmain.c中的bootmain
+
 bootloader设置的堆栈从0x7c00开始，使用"call bootmain"转入bootmain函数，
 call指令压栈，所以bootmain中ebp为0x7bf8
 
@@ -291,8 +288,8 @@ call指令压栈，所以bootmain中ebp为0x7bf8
 
 [练习6.1] 中断向量表中一个表项占多少字节？其中哪几位代表中断处理代码的入口？
 
-中断向量表一个表项占用8字节，其中2-3字节是段选择子，0-1字节和6-7字节拼成位移，
-两者联合便是中断处理程序的入口地址。
+中断向量表中一个表项占用8字节，其中2,3字节是段选择子，0,1字节和6,7字节拼成位移，
+两者联合得到中断处理程序的入口地址。
 
 [练习6.2] 请编程完善kern/trap/trap.c中对中断向量表进行初始化的函数idt_init。
 
