@@ -1,0 +1,9 @@
+target remote :1234
+set architecture i8086
+b *0x7c00
+c
+x /10i $pc
+set architecture i386
+b *0x7c00
+c
+x /10i $pc
