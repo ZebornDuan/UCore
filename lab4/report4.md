@@ -5,7 +5,7 @@
 此处与参考答案代码的主要差别是进程名称初始化的长度不一致，实现中将name数组全部置零，而参考答案仅将有效的PROC_NAME_LEN个字节置零。
 
 
-* 请说明proc_struct中`struct context context`和`struct trapframe *tf`成员变量含义和在本实验中的作用是啥？
+* 请说明proc_struct中struct context context和struct trapframe \*tf成员变量含义和在本实验中的作用是啥？
 
 
 context是进程执行的上下文，用于在进程切换时保存当前ebx、ecx、edx、esi、edi、esp、ebp、eip八个寄存器，即保存当前进程的执行状态上下文。
@@ -31,11 +31,11 @@ tf是中断帧，当进程从用户空间转换到内核空间时，中断
 
 是。
 
-线程的PID由`get_pid`函数产生，该函数最终返回的条件是遍历全部进程，其进程号与将返回的新的进程号不同，从而保证了新的进程的pid唯一。同时通过next_safe这个变量确保进程号在一个合法范围内。
+线程的PID由get_pid函数产生，该函数最终返回的条件是遍历全部进程，其进程号与将返回的新的进程号不同，从而保证了新的进程的pid唯一。同时通过next_safe这个变量确保进程号在一个合法范围内。
 
 ## 练习3：阅读代码，理解 proc_run 函数和它调用的函数如何完成进程切换的。
 
-`proc_run`的执行过程为：
+proc_run的执行过程为：
 
 1. 保存中断位并关中断
 2. 将current指针指向将要执行的进程
@@ -45,8 +45,11 @@ tf是中断帧，当进程从用户空间转换到内核空间时，中断
 6. 当调用proc_run的进程重新执行之后恢复中断位
 
 * 在本实验的执行过程中，创建且运行了几个内核线程？
+
 两个:
+
 idleproc，这个线程不断试探是否有可以调度的进程，有则执行；
+
 initproc，本实验中的仅输出一段字符串。
 
 * 语句local_intr_save(intr_flag);....local_intr_restore(intr_flag);在这里有何作用?请说明理由.
