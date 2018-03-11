@@ -58,24 +58,24 @@
 
 - 请给出ucore中一个用户态进程的执行状态生命周期图（包执行状态，执行状态之间的变换关系，以及产生变换的事件或函数调用）。
 
-       |
-       |  alloc_proc
-       |
-      \ /
-     UINIT
-       |
-       |  wakeup_proc
-       | 
-      \ /             wakeup_proc
-    RUNABLE <----------------------------- SLEEPING
-       |   \_______                           / \
-       |  do_kill  \                           |
-       |            \schedule                  | do_wait
-      \ /            \                         |
-     ZOMBIE           \--->RUNNING--------------
-      / \                     |
-       |______________________|
-               do_exit
+ |
+ |  alloc_proc
+ |
+\ /
+UINIT
+ |
+ |  wakeup_proc
+ | 
+\ /             wakeup_proc
+RUNABLE <----------------------------- SLEEPING
+ |   \_______                           / \
+ |  do_kill  \                           |
+ |            \schedule                  | do_wait
+\ /            \                         |
+ZOMBIE           \--->RUNNING--------------
+/ \                     |
+ |______________________|
+         do_exit
 
 ## 扩展练习 Challenge ：实现 Copy on Write 机制
 
