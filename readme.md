@@ -5,13 +5,15 @@
 ## 项目中拓展部分完成情况如下：
 
 #### Done：
-lab1 Challenge
-lab2 Challenge1 Buddy System
-lab3 Challenge Extended Clock Algorithn
-lab5 Challenge COW
-lab6 Challenge CFS
+
+- lab1 Challenge
+- lab2 Challenge1 Buddy System
+- lab3 Challenge Extended Clock Algorithn
+- lab5 Challenge COW
+- lab6 Challenge CFS
 
 #### To do
-lab2 Challenge2 Slab
-lab4 Challenge Slab
-lab7 Challenge
+
+- lab2 Challenge2 Slab
+- lab4 Challenge Slab
+- lab7 Challenge
