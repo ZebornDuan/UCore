@@ -7,7 +7,7 @@
 #define USE_SKEW_HEAP 1
 
 /* You should define the BigStride constant here*/
-/* LAB6: 2011011384 */
+/* LAB6: 2015011385 */
 #define BIG_STRIDE    0x7FFFFFFF /* ??? */
 
 /* The compare function for two skew_heap_node_t's and the
@@ -36,7 +36,7 @@ proc_stride_comp_f(void *a, void *b)
  */
 static void
 stride_init(struct run_queue *rq) {
-     /* LAB6: 2011011384 */
+     /* LAB6: 2015011385 */
      list_init(&(rq->run_list));
      rq->lab6_run_pool = NULL;
      rq->proc_num = 0;
@@ -57,7 +57,7 @@ stride_init(struct run_queue *rq) {
  */
 static void
 stride_enqueue(struct run_queue *rq, struct proc_struct *proc) {
-     /* LAB6: 2011011384 */
+     /* LAB6: 2015011385 */
 #if USE_SKEW_HEAP
      rq->lab6_run_pool =
           skew_heap_insert(rq->lab6_run_pool, &(proc->lab6_run_pool), proc_stride_comp_f);
@@ -82,7 +82,7 @@ stride_enqueue(struct run_queue *rq, struct proc_struct *proc) {
  */
 static void
 stride_dequeue(struct run_queue *rq, struct proc_struct *proc) {
-     /* LAB6: 2011011384 */
+     /* LAB6: 2015011385 */
 #if USE_SKEW_HEAP
      rq->lab6_run_pool =
           skew_heap_remove(rq->lab6_run_pool, &(proc->lab6_run_pool), proc_stride_comp_f);
@@ -107,7 +107,7 @@ stride_dequeue(struct run_queue *rq, struct proc_struct *proc) {
  */
 static struct proc_struct *
 stride_pick_next(struct run_queue *rq) {
-     /* LAB6: 2011011384 */
+     /* LAB6: 2015011385 */
 #if USE_SKEW_HEAP
      if (rq->lab6_run_pool == NULL) return NULL;
      struct proc_struct *p = le2proc(rq->lab6_run_pool, lab6_run_pool);
@@ -143,7 +143,7 @@ stride_pick_next(struct run_queue *rq) {
  */
 static void
 stride_proc_tick(struct run_queue *rq, struct proc_struct *proc) {
-     /* LAB6: 2011011384 */
+     /* LAB6: 2015011385 */
      if (proc->time_slice > 0) {
           proc->time_slice --;
      }

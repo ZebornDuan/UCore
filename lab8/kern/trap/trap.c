@@ -42,7 +42,7 @@ static struct pseudodesc idt_pd = {
 /* idt_init - initialize IDT to each of the entry points in kern/trap/vectors.S */
 void
 idt_init(void) {
-     /* LAB1 2011011384 : STEP 2 */
+     /* LAB1 2015011385 : STEP 2 */
      /* (1) Where are the entry addrs of each Interrupt Service Routine (ISR)?
       *     All ISR's entry addrs are stored in __vectors. where is uintptr_t __vectors[] ?
       *     __vectors[] is in kern/trap/vector.S which is produced by tools/vector.c
@@ -54,7 +54,7 @@ idt_init(void) {
       *     You don't know the meaning of this instruction? just google it! and check the libs/x86.h to know more.
       *     Notice: the argument of lidt is idt_pd. try to find it!
       */
-     /* LAB5 2011011384 */ 
+     /* LAB5 2015011385 */ 
      //you should update your lab1 code (just add ONE or TWO lines of code), let user app to use syscall to get the service of ucore
      //so you should setup the syscall interrupt gate in here
     extern uintptr_t __vectors[];
@@ -221,22 +221,22 @@ trap_dispatch(struct trapframe *tf) {
     LAB3 : If some page replacement algorithm(such as CLOCK PRA) need tick to change the priority of pages,
     then you can add code here. 
 #endif
-        /* LAB1 2011011384 : STEP 3 */
+        /* LAB1 2015011385 : STEP 3 */
         /* handle the timer interrupt */
         /* (1) After a timer interrupt, you should record this event using a global variable (increase it), such as ticks in kern/driver/clock.c
          * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
          * (3) Too Simple? Yes, I think so!
          */
-        /* LAB5 2011011384 */
+        /* LAB5 2015011385 */
         /* you should upate you lab1 code (just add ONE or TWO lines of code):
          *    Every TICK_NUM cycle, you should set current process's current->need_resched = 1
          */
-        /* LAB6 2011011384 */
+        /* LAB6 2015011385 */
         /* you should upate you lab5 code
          * IMPORTANT FUNCTIONS:
 	     * sched_class_proc_tick
          */         
-        /* LAB7 2011011384 */
+        /* LAB7 2015011385 */
         /* you should upate you lab6 code
          * IMPORTANT FUNCTIONS:
 	     * run_timer_list
@@ -254,7 +254,7 @@ trap_dispatch(struct trapframe *tf) {
           dev_stdin_write(c);
         }
         break;
-    //LAB1 CHALLENGE 1 : 2011011384 you should modify below codes.
+    //LAB1 CHALLENGE 1 : 2015011385 you should modify below codes.
     case T_SWITCH_TOU:
         //The idea is iret pops EFLAGS, EIP, CS to CPU registers
         //So we push to the stack these registers we want and then directly jump to iret
